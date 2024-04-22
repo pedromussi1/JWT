@@ -100,6 +100,7 @@ app.listen(5000, () => {
 ```
 </details>
 
+<hr>
 ### <h3>db.js</h3>
 
 <details>
