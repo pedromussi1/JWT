@@ -41,10 +41,14 @@
   <kbd><img src="https://i.imgur.com/9p4H4wO.png" alt="AddingItem"></kbd>
 </p>
 
-<p>The user can write their email and password credentials in order to log into the website.</p>
+<p>The user can write their email and password credentials in order to log into the website. Doing so will take the user to their Dashboard that displays their username. The user will only be able to log into an account that has already been registered on the website.</p>
 
 <p align="center">
   <kbd><img src="https://i.imgur.com/wtCjc3x.png" alt="AddingItem1"></kbd>
+</p>
+
+<p align="center">
+  <kbd><img src="https://i.imgur.com/NEnmtvj.png" alt="Level 2"></kbd>
 </p>
 
 <h3>Registering as a User on the Website</h3>
@@ -53,7 +57,7 @@
   <kbd><img src="https://i.imgur.com/Kuhy6Hr.png" alt="DeletingItem"></kbd>
 </p>
 
-<p>In case the user wants to delete an item for the list, they can simply click on the button "delete" next to the item they want to delete. In this example, I chose to delete the item "wash the dishes".</p>
+<p>The user here can register a new account on the website by providing email, password and username credentials. After registering, the user will access their dashboard that displays their username.</p>
 
 <h3>Editing an item on the list</h3>
 
