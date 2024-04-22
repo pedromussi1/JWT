@@ -76,6 +76,8 @@ app.listen(5000, () => {
     console.log("Server is running on port 5000");  // Logging a message when the server starts
 });
 
+```
+</details>
 
 ### <h3>db.js</h3>
 
