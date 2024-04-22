@@ -33,20 +33,41 @@ database: The name of the PostgreSQL database to connect to (in this case, it's 
 module.exports: Exporting the pool instance so that it can be imported and used in other files, such as your main application file (app.js) or any route handlers that require database access.
 </p>
 
-<h3>App.js</h3>
+
+
+<h3>jwtAuth.js</h3>
 
 <p>
-useState: Declaring a state variable isAuthenticated to track whether the user is authenticated or not.
-setAuth: A function to update the isAuthenticated state variable.
-isAuth: An asynchronous function to check if the user is authenticated by sending a request to the server with the JWT token stored in localStorage.
-useEffect: Using useEffect to call the isAuth function when the component mounts.
-Router and Routes: Using BrowserRouter, Routes, and Route from react-router-dom to set up the application's routing.
-Routes: Defining the application's routes:
-/ and /login: Display the Login component if the user is not authenticated, otherwise navigate to /dashboard.
-/register: Display the Register component if the user is not authenticated, otherwise navigate to /login.
-/dashboard: Display the Dashboard component if the user is authenticated, otherwise navigate to /login.
-Navigate: Using Navigate from react-router-dom to navigate to different routes based on the authentication status.
-toast.configure(): Configuring toast notifications to be used throughout the application.
+Router: Creating a new router instance from Express.
+POST "/register": Handling registration of new users.
+POST "/login": Handling user login.
+GET "/is-verify": Verifying if the user is authenticated (authorization middleware is used to check the JWT token).
+module.exports: Exporting the router for use in other files.
+</p>
+
+<h3>authorization.js</h3>
+
+<p>
+jwt: Importing the jsonwebtoken module.
+dotenv: Importing and configuring dotenv to use environment variables.
+module.exports: Exporting the middleware function to be used in other files.
+req.header("token"): Extracting the JWT token from the "token" header of the request.
+jwt.verify: Verifying the JWT token using the secret key stored in process.env.jwtSecret.
+req.user: Storing the payload (user information) from the JWT token in req.user for use in subsequent middleware or routes.
+next(): Calling the next middleware or route handler in the Express request-response cycle.
+Error Handling: If the token is invalid or there's an error during verification, returning a "Not Authorized" error response with a 403 status code.
+</p>
+
+<h3>(Server) dashboard.js</h3>
+
+<p>
+Router: Creating a new router instance from Express.
+GET "/": Handling the route to fetch user information.
+authorization: Middleware to check if the user is authorized (i.e., if the JWT token is valid).
+req.user: Contains the payload from the JWT token after authorization.
+pool.query: Querying the database to fetch the user's name based on the user_id stored in req.user.
+res.json: Sending the user's name as a JSON response.
+module.exports: Exporting the router for use in other files.
 </p>
 
 <h2>Client</h2>
@@ -62,39 +83,20 @@ ReactDOM.createRoot(document.getElementById('root')): Creating a new React root 
 root.render: Rendering the App component inside the React root. The <React.StrictMode> wraps the App component to enable React's strict mode, which helps identify potential problems in the application's code.
 </p>
 
-<h3>jwtAuth.js</h3>
+<h3>App.js</h3>
 
 <p>
-Router: Creating a new router instance from Express.
-POST "/register": Handling registration of new users.
-POST "/login": Handling user login.
-GET "/is-verify": Verifying if the user is authenticated (authorization middleware is used to check the JWT token).
-module.exports: Exporting the router for use in other files.
-</p>
-
-<h3>(Server) dashboard.js</h3>
-
-<p>
-Router: Creating a new router instance from Express.
-GET "/": Handling the route to fetch user information.
-authorization: Middleware to check if the user is authorized (i.e., if the JWT token is valid).
-req.user: Contains the payload from the JWT token after authorization.
-pool.query: Querying the database to fetch the user's name based on the user_id stored in req.user.
-res.json: Sending the user's name as a JSON response.
-module.exports: Exporting the router for use in other files.
-</p>
-
-<h3>authorization.js</h3>
-
-<p>
-jwt: Importing the jsonwebtoken module.
-dotenv: Importing and configuring dotenv to use environment variables.
-module.exports: Exporting the middleware function to be used in other files.
-req.header("token"): Extracting the JWT token from the "token" header of the request.
-jwt.verify: Verifying the JWT token using the secret key stored in process.env.jwtSecret.
-req.user: Storing the payload (user information) from the JWT token in req.user for use in subsequent middleware or routes.
-next(): Calling the next middleware or route handler in the Express request-response cycle.
-Error Handling: If the token is invalid or there's an error during verification, returning a "Not Authorized" error response with a 403 status code.
+useState: Declaring a state variable isAuthenticated to track whether the user is authenticated or not.
+setAuth: A function to update the isAuthenticated state variable.
+isAuth: An asynchronous function to check if the user is authenticated by sending a request to the server with the JWT token stored in localStorage.
+useEffect: Using useEffect to call the isAuth function when the component mounts.
+Router and Routes: Using BrowserRouter, Routes, and Route from react-router-dom to set up the application's routing.
+Routes: Defining the application's routes:
+/ and /login: Display the Login component if the user is not authenticated, otherwise navigate to /dashboard.
+/register: Display the Register component if the user is not authenticated, otherwise navigate to /login.
+/dashboard: Display the Dashboard component if the user is authenticated, otherwise navigate to /login.
+Navigate: Using Navigate from react-router-dom to navigate to different routes based on the authentication status.
+toast.configure(): Configuring toast notifications to be used throughout the application.
 </p>
 
 <h3>Register.js</h3>
