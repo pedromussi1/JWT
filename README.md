@@ -59,20 +59,4 @@
 
 <p>The user here can register a new account on the website by providing email, password and username credentials. After registering, the user will access their dashboard that displays their username.</p>
 
-<h3>Editing an item on the list</h3>
 
-<p align="center">
-  <kbd><img src="https://i.imgur.com/LZuuvNn.png?3" alt="Level 2"></kbd>
-</p>
-
-<p>In case the user wants to edit an item on the list, they can press the button "edit" next to the item they want to edit. In this example I chose to edit the "I need to clean my car" item on the list and change it to "I need to buy toothpaste".</p>
-
-<p align="center">
-  <kbd><img src="https://i.imgur.com/8orPkgC.png" alt="Level 3"></kbd>
-</p>
-
-<p align="center">
-  <kbd><img src="https://i.imgur.com/ULVNaP3.png" alt="Level 4"></kbd>
-</p>
-
-<p>You can see now that the item has been changed and it is displayed correctly on the list.</p>
