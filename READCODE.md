@@ -75,31 +75,74 @@ module.exports: Exporting the router for use in other files.
 <h3>(Server) dashboard.js</h3>
 
 <p>
-
+Router: Creating a new router instance from Express.
+GET "/": Handling the route to fetch user information.
+authorization: Middleware to check if the user is authorized (i.e., if the JWT token is valid).
+req.user: Contains the payload from the JWT token after authorization.
+pool.query: Querying the database to fetch the user's name based on the user_id stored in req.user.
+res.json: Sending the user's name as a JSON response.
+module.exports: Exporting the router for use in other files.
 </p>
 
-<h3>authorization</h3>
+<h3>authorization.js</h3>
 
 <p>
-
+jwt: Importing the jsonwebtoken module.
+dotenv: Importing and configuring dotenv to use environment variables.
+module.exports: Exporting the middleware function to be used in other files.
+req.header("token"): Extracting the JWT token from the "token" header of the request.
+jwt.verify: Verifying the JWT token using the secret key stored in process.env.jwtSecret.
+req.user: Storing the payload (user information) from the JWT token in req.user for use in subsequent middleware or routes.
+next(): Calling the next middleware or route handler in the Express request-response cycle.
+Error Handling: If the token is invalid or there's an error during verification, returning a "Not Authorized" error response with a 403 status code.
 </p>
 
 <h3>Register.js</h3>
 
 <p>
-
+useState: Initializing state to store form input values (email, password, name).
+onChange: Function to update the state with the current form input values as the user types.
+onSubmitForm: Function to handle form submission:
+Prepares the request body with form input values.
+Sends a POST request to the registration endpoint (http://localhost:5000/auth/register).
+Parses the response from the server.
+If registration is successful, it stores the JWT token in localStorage, sets the authentication status to true, and displays a success toast message.
+If registration fails, it sets the authentication status to false and displays an error toast message.
+Form: Renders a form with input fields for email, password, and name, and a submit button to register.
+Link: Provides a link to navigate to the Login page.
+setAuth: A function passed as a prop from the parent component to update the authentication status in the parent component's state.
 </p>
 
 <h3>(Client) Dashboard.js</h3>
 
 <p>
-
+useState: Initializing state to store the user name.
+getName: Asynchronous function to fetch the user name from the server:
+Sends a GET request to the dashboard endpoint (http://localhost:5000/dashboard/).
+Includes the JWT token from localStorage in the request headers.
+Parses the response and sets the user name in the state.
+logout: Function to handle logout:
+Removes the JWT token from localStorage.
+Sets the authentication status to false.
+Displays a logout success toast message.
+useEffect: Hook that runs the getName function when the component mounts to fetch and display the user name.
+Dashboard: Renders the dashboard title with the user name and a logout button.
 </p>
 
 <h3>Login</h3>
 
 <p>
-
+useState: Initializing state to store form input values (email, password).
+onChange: Function to update the state with the current form input values as the user types.
+onSubmitForm: Function to handle form submission:
+Prepares the request body with form input values.
+Sends a POST request to the login endpoint (http://localhost:5000/auth/login).
+Parses the response from the server.
+If login is successful, it stores the JWT token in localStorage, sets the authentication status to true, and displays a success toast message.
+If login fails, it sets the authentication status to false and displays an error toast message.
+Form: Renders a form with input fields for email and password, and a submit button to login.
+Link: Provides a link to navigate to the Register page.
+setAuth: A function passed as a prop from the parent component to update the authentication status in the parent component's state.
 </p>
 
 <hr>
@@ -386,6 +429,32 @@ module.exports = router;  // Exporting the router
 
 ```js
 
+const jwt = require("jsonwebtoken");  // Importing the jsonwebtoken module
+require("dotenv").config();  // Importing and configuring dotenv for environment variables
+
+module.exports = async(req, res, next) => {
+    try {
+        const jwtToken = req.header("token");  // Extracting the JWT token from the request header
+
+        // If no token is found in the header, return an error response
+        if(!jwtToken){
+            return res.status(403).json("Not Authorized");
+        }
+
+        // Verifying the JWT token using the secret key from environment variables
+        const payload = jwt.verify(jwtToken, process.env.jwtSecret);
+
+        // Storing the payload (user information) in req.user for use in subsequent middleware or routes
+        req.user = payload.user;
+
+        // Calling the next middleware or route handler
+        next();
+
+    } catch (err) {
+        // If the token is invalid or there's an error, return an error response
+        return res.status(403).json("Not Authorized");
+    }
+};
 
 
 ```
@@ -400,6 +469,86 @@ module.exports = router;  // Exporting the router
 
 ```js
 
+import React, {Fragment, useState} from "react";
+import {Link} from "react-router-dom";
+import {toast} from "react-toastify";
+
+const Register = ({setAuth}) => {
+
+    // State to store form input values
+    const [inputs, setInputs] = useState({
+        email: "",
+        password: "",
+        name: ""
+    });
+
+    // Destructuring input values from state
+    const {email, password, name} = inputs;
+
+    // Function to update input values when user types in the form fields
+    const onChange = (e) => {
+        setInputs({...inputs, [e.target.name] : e.target.value});
+    };
+
+    // Function to handle form submission
+    const onSubmitForm =  async (e) => {
+        e.preventDefault();
+
+        try {
+            // Prepare request body
+            const body = {email, password, name};
+            
+            // Send POST request to register endpoint
+            const response = await fetch("http://localhost:5000/auth/register", {
+                method: "POST",
+                headers: {"Content-Type" : "application/json"},
+                body: JSON.stringify(body)
+            });
+
+            // Parse the response
+            const parseRes = await response.json();
+
+            // If registration is successful
+            if(parseRes.token){
+                // Store the token in localStorage
+                localStorage.setItem("token", parseRes.token);
+
+                // Set authentication status to true
+                setAuth(true);
+                
+                // Display success toast message
+                toast.success("Registered Successfully!");
+            }else{
+                // Set authentication status to false
+                setAuth(false);
+                
+                // Display error toast message
+                toast.error(parseRes);
+            }
+
+        } catch (err) {
+            // Log error to console
+            console.error(err.message);
+        }
+    };
+
+    return (
+        <Fragment>
+            <h1 className="text-center my-5">Register</h1>
+            {/* Register form */}
+            <form onSubmit={onSubmitForm}>
+                <input type="email" name="email" placeholder="Email" className="form-control my-3" value={email} onChange={e => onChange(e)}/>
+                <input type="password" name="password" placeholder="Password" className="form-control my-3" value={password} onChange={e => onChange(e)}/>
+                <input type="text" name="name" placeholder="Name" className="form-control my-3" value={name} onChange={e => onChange(e)}/>
+                <button className="btn-success btn-block">Submit</button>
+            </form>
+            {/* Link to Login page */}
+            <Link to="/login">Login</Link>
+        </Fragment>
+    );
+};
+
+export default Register;
 
 
 ```
@@ -414,6 +563,84 @@ module.exports = router;  // Exporting the router
 
 ```js
 
+import React, {Fragment, useState} from "react";
+import {Link} from "react-router-dom";
+import {toast} from "react-toastify";
+
+const Login = ({setAuth}) => {
+
+    // State to store form input values
+    const [inputs, setInputs] = useState({
+        email: "",
+        password: ""
+    });
+
+    // Destructuring input values from state
+    const {email, password} = inputs;
+
+    // Function to update input values when user types in the form fields
+    const onChange = (e) => {
+        setInputs({...inputs, [e.target.name]: e.target.value});
+    };
+
+    // Function to handle form submission
+    const onSubmitForm = async (e) => {
+        e.preventDefault();
+        try {
+            // Prepare request body
+            const body = {email, password};
+            
+            // Send POST request to login endpoint
+            const response = await fetch("http://localhost:5000/auth/login", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(body)
+            });
+
+            // Parse the response
+            const parseRes = await response.json();
+
+            // If login is successful
+            if(parseRes.token){
+                // Store the token in localStorage
+                localStorage.setItem("token", parseRes.token);
+
+                // Set authentication status to true
+                setAuth(true);
+                
+                // Display success toast message
+                toast.success("Logged in successfully!");
+            }else{
+                // Set authentication status to false
+                setAuth(false);
+                
+                // Display error toast message
+                toast.error(parseRes);
+            }
+
+        } catch (err) {
+            // Log error to console
+            console.error(err.message);
+        }
+    };
+
+    return (
+        <Fragment>
+            {/* Login title */}
+            <h1 className="text-center my-5">Login</h1>
+            {/* Login form */}
+            <form onSubmit={onSubmitForm}>
+                <input type="email" name="email" placeholder="Email" className="form-control my-3" value={email} onChange={e => onChange(e)}/>
+                <input type="password" name="password" placeholder="Password" className="form-control my-3" value={password} onChange={e => onChange(e)}/>
+                <button className="btn btn-success btn-block">Submit</button>
+            </form>
+            {/* Link to Register page */}
+            <Link to="/register">Register</Link>
+        </Fragment>
+    );
+};
+
+export default Login;
 
 
 ```
@@ -428,6 +655,63 @@ module.exports = router;  // Exporting the router
 
 ```js
 
+import React, {Fragment, useState, useEffect} from "react";
+import {toast} from "react-toastify";
+
+const Dashboard = ({setAuth}) => {
+
+    // State to store user name
+    const [name, setName] = useState("");
+
+    // Function to fetch user name from the server
+    async function getName(){
+        try {
+            // Fetch user name from the server
+            const response = await fetch("http://localhost:5000/dashboard/", {
+                method : "GET",
+                headers: {token: localStorage.token}
+            });
+
+            // Parse the response
+            const parseRes = await response.json();
+
+            // Set the user name in the state
+            setName(parseRes.user_name);
+        } catch (err) {
+            // Log error to console
+            console.error(err.message);
+        }
+    }
+
+    // Function to handle logout
+    const logout = (e) => {
+        e.preventDefault();
+        // Remove token from localStorage
+        localStorage.removeItem("token");
+        
+        // Set authentication status to false
+        setAuth(false);
+        
+        // Display logout success toast message
+        toast.success("Logged out successfully!");
+    };
+
+    // useEffect to fetch user name when the component mounts
+    useEffect(() =>{
+        getName();
+    }, []);
+
+    return (
+        <Fragment>
+            {/* Dashboard title with user name */}
+            <h1>Dashboard {name}</h1>
+            {/* Logout button */}
+            <button className="btn btn-primary" onClick={e => logout(e)}>Logout</button>
+        </Fragment>
+    );
+};
+
+export default Dashboard;
 
 
 ```
@@ -463,236 +747,6 @@ root.render(
 
 <hr>
 
-### <h3>EditTodo.js</h3>
 
-<details>
-<summary>Click to expand code</summary>
-
-```js
-
-import React, { Fragment, useState } from "react";
-
-// EditTodo component
-const EditTodo = ({ todo }) => {
-
-    // State variable to store the description of the todo item
-    const [description, setDescription] = useState(todo.description);
-
-    // Function to update the description of the todo item
-    const updateDescription = async (e) => {
-        e.preventDefault(); // Preventing the default form submission behavior
-        try {
-            const body = { description }; // Creating a body object with the updated description
-            // Sending a PUT request to update the todo item with the new description
-            const response = await fetch(`http://localhost:5000/todos/${todo.todo_id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body)
-            });
-
-            window.location = "/"; // Redirecting to the homepage after successful update
-        } catch (err) {
-            console.error(err.message); // Logging any errors to the console
-        }
-    }
-
-    // Rendering the EditTodo component
-    return (
-        <Fragment>
-            {/* Button to trigger the modal */}
-            <button type="button" className="btn btn-warning" data-toggle="modal" data-target={`#id${todo.todo_id}`}>
-                Edit
-            </button>
-
-            {/* Modal for editing the todo item */}
-            <div className="modal" id={`id${todo.todo_id}`} onClick={() => setDescription(todo.description)}>
-                <div className="modal-dialog">
-                    <div className="modal-content">
-
-                        {/* Modal header */}
-                        <div className="modal-header">
-                            <h4 className="modal-title">Edit Todo</h4>
-                            <button type="button" className="close" data-dismiss="modal" onClick={() => setDescription(todo.description)}>&times;</button>
-                        </div>
-
-                        {/* Modal body */}
-                        <div className="modal-body">
-                            {/* Input field to edit the description */}
-                            <input type='text' className="form-control" value={description} onChange={e => setDescription(e.target.value)} />
-                        </div>
-
-                        {/* Modal footer */}
-                        <div className="modal-footer">
-                            {/* Edit button */}
-                            <button type="button" className="btn btn-warning" data-dismiss="modal" onClick={e => updateDescription(e)}>Edit</button>
-                            {/* Close button */}
-                            <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={() => setDescription(todo.description)}>Close</button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </Fragment>
-    );
-};
-
-export default EditTodo; // Exporting the EditTodo component
-
-```
-</details>
-
-<hr>
-
-### <h3>InputTodo.js</h3>
-
-<details>
-<summary>Click to expand code</summary>
-
-```js
-
-import React, { Fragment, useState } from 'react';
-
-// InputTodo component
-const InputTodo = () => {
-
-    // State variable to store the description of the todo item
-    const [description, setDescription] = useState("");
-
-    // Function to handle form submission
-    const onSubmitForm = async e => {
-        e.preventDefault(); // Preventing the default form submission behavior
-        try {
-            const body = { description }; // Creating a body object with the description
-            // Sending a POST request to add a new todo item
-            const response = await fetch("http://localhost:5000/todos", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body)
-            });
-
-            window.location = "/"; // Redirecting to the homepage after successful addition
-        } catch (err) {
-            console.error(err.message); // Logging any errors to the console
-        }
-    };
-
-    // Rendering the InputTodo component
-    return (
-        <Fragment>
-            {/* Heading */}
-            <h1 className="text-center mt-5">Pern Todo List</h1>
-
-            {/* Form for adding a new todo item */}
-            <form className="d-flex mt-5" onSubmit={onSubmitForm}>
-                {/* Input field to enter the description of the new todo item */}
-                <input type="text" className="form-control" value={description} onChange={e => setDescription(e.target.value)} />
-
-                {/* Submit button */}
-                <button className="btn btn-success">Add</button>
-            </form>
-        </Fragment>
-    );
-};
-
-export default InputTodo; // Exporting the InputTodo component
-
-```
-</details>
-
-<hr>
-
-### <h3>ListTodos.js</h3>
-
-<details>
-<summary>Click to expand code</summary>
-
-```js
-
-import React, { Fragment, useEffect, useState } from "react";
-
-import EditTodo from "./EditTodo";
-
-// ListTodos component
-const ListTodos = () => {
-
-    // State variable to store the list of todos
-    const [todos, setTodos] = useState([]);
-
-    // Function to delete a todo item
-    const deleteTodo = async (id) => {
-        try {
-            // Sending a DELETE request to delete the todo item with the specified id
-            const deleteTodo = await fetch(`http://localhost:5000/todos/${id}`, {
-                method: "DELETE"
-            });
-
-            // Updating the todos state to remove the deleted todo item
-            setTodos(todos.filter(todo => todo.todo_id !== id));
-        } catch (err) {
-            console.error(err.message); // Logging any errors to the console
-        }
-    }
-
-    // Function to fetch all todo items from the backend
-    const getTodos = async () => {
-        try {
-            // Sending a GET request to fetch all todo items
-            const response = await fetch("http://localhost:5000/todos");
-            const jsonData = await response.json(); // Parsing the JSON response
-
-            // Updating the todos state with the fetched todo items
-            setTodos(jsonData);
-        } catch (err) {
-            console.error(err.message); // Logging any errors to the console
-        }
-    };
-
-    // useEffect hook to fetch todos when the component mounts
-    useEffect(() => {
-        getTodos(); // Calling the getTodos function
-    }, []);
-
-    // Logging the todos to the console
-    console.log(todos);
-
-    // Rendering the ListTodos component
-    return ( 
-        <Fragment>
-            {/* Table to display the list of todos */}
-            <table className="table mt-5 text-center">
-                <thead>
-                    <tr>
-                        <th>Description</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {/* Mapping through the todos array and rendering each todo as a table row */}
-                    {todos.map(todo => (
-                        <tr key={todo.todo_id}>
-                            <td>{todo.description}</td>
-                            <td>
-                                {/* EditTodo component to edit the todo item */}
-                                <EditTodo todo={todo} />
-                            </td>
-                            <td>
-                                {/* Delete button to delete the todo item */}
-                                <button className="btn btn-danger" onClick={() => deleteTodo(todo.todo_id)}>Delete</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </Fragment>
-    );
-};
-
-export default ListTodos; // Exporting the ListTodos component
-
-```
-</details>
-
-<hr>
 
 
