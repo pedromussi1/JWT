@@ -1,10 +1,10 @@
 
-<h1 align="center">PernTodo</h1>
+<h1 align="center">JWT with PERN</h1>
 
 
 
 
-<kbd><img src="https://i.imgur.com/o33BFMI.png?1" alt="PernTodo Website"></kbd>
+<kbd><img src="https://i.imgur.com/ZTNjSuP.png?1" alt="JWT Website"></kbd>
 
 
 <h2>Description</h2>
