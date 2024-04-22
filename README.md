@@ -38,23 +38,23 @@
 <h3>Logging into the Website</h3>
 
 <p align="center">
-  <kbd><img src="https://i.imgur.com/9p4H4wO.png" alt="AddingItem"></kbd>
+  <kbd><img src="https://i.imgur.com/9p4H4wO.png?1" alt="AddingItem"></kbd>
 </p>
 
 <p>The user can write their email and password credentials in order to log into the website. Doing so will take the user to their Dashboard that displays their username. The user will only be able to log into an account that has already been registered on the website.</p>
 
 <p align="center">
-  <kbd><img src="https://i.imgur.com/wtCjc3x.png" alt="AddingItem1"></kbd>
+  <kbd><img src="https://i.imgur.com/wtCjc3x.png?1" alt="AddingItem1"></kbd>
 </p>
 
 <p align="center">
-  <kbd><img src="https://i.imgur.com/NEnmtvj.png" alt="Level 2"></kbd>
+  <kbd><img src="https://i.imgur.com/ILhG1lD.png?1" alt="Level 2"></kbd>
 </p>
 
-<h3>Registering as a User on the Website</h3>
+<h3>Registering new User on the Website</h3>
 
 <p align="center">
-  <kbd><img src="https://i.imgur.com/Kuhy6Hr.png" alt="DeletingItem"></kbd>
+  <kbd><img src="https://i.imgur.com/RhRDuUr.png?1" alt="DeletingItem"></kbd>
 </p>
 
 <p>The user here can register a new account on the website by providing email, password and username credentials. After registering, the user will access their dashboard that displays their username.</p>
@@ -62,7 +62,7 @@
 <h3>Editing an item on the list</h3>
 
 <p align="center">
-  <kbd><img src="https://i.imgur.com/NEnmtvj.png" alt="Level 2"></kbd>
+  <kbd><img src="https://i.imgur.com/LZuuvNn.png?3" alt="Level 2"></kbd>
 </p>
 
 <p>In case the user wants to edit an item on the list, they can press the button "edit" next to the item they want to edit. In this example I chose to edit the "I need to clean my car" item on the list and change it to "I need to buy toothpaste".</p>
