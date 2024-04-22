@@ -59,4 +59,6 @@
 
 <p>The user here can register a new account on the website by providing email, password and username credentials. After registering, the user will access their dashboard that displays their username.</p>
 
-
+<p align="center">
+  <kbd><img src="https://i.imgur.com/LZuuvNn.png?3" alt="DeletingItem"></kbd>
+</p>
