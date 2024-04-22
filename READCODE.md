@@ -65,6 +65,8 @@ root.render: Rendering the App component inside the React root. The <React.Stric
 
 
 
+<br>
+
 ### <h3>(Server) index.js</h3>
 
 <details>
