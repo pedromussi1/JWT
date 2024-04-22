@@ -101,6 +101,7 @@ app.listen(5000, () => {
 </details>
 
 <hr>
+
 ### <h3>db.js</h3>
 
 <details>
@@ -204,6 +205,90 @@ function App() {
 }
 
 export default App;
+
+
+```
+</details>
+
+<hr>
+
+### <h3>jwtAuth.js</h3>
+
+<details>
+<summary>Click to expand code</summary>
+
+```js
+
+
+
+```
+</details>
+
+<hr>
+
+### <h3>(Server) dashboard.js</h3>
+
+<details>
+<summary>Click to expand code</summary>
+
+```js
+
+
+
+```
+</details>
+
+<hr>
+
+### <h3>authorization.js</h3>
+
+<details>
+<summary>Click to expand code</summary>
+
+```js
+
+
+
+```
+</details>
+
+<hr>
+
+### <h3>Register.js</h3>
+
+<details>
+<summary>Click to expand code</summary>
+
+```js
+
+
+
+```
+</details>
+
+<hr>
+
+### <h3>Login.js</h3>
+
+<details>
+<summary>Click to expand code</summary>
+
+```js
+
+
+
+```
+</details>
+
+<hr>
+
+### <h3>(Client) Dashboard.js</h3>
+
+<details>
+<summary>Click to expand code</summary>
+
+```js
+
 
 
 ```
