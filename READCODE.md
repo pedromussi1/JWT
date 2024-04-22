@@ -33,6 +33,22 @@ database: The name of the PostgreSQL database to connect to (in this case, it's 
 module.exports: Exporting the pool instance so that it can be imported and used in other files, such as your main application file (app.js) or any route handlers that require database access.
 </p>
 
+<h3>App.js</h3>
+
+<p>
+useState: Declaring a state variable isAuthenticated to track whether the user is authenticated or not.
+setAuth: A function to update the isAuthenticated state variable.
+isAuth: An asynchronous function to check if the user is authenticated by sending a request to the server with the JWT token stored in localStorage.
+useEffect: Using useEffect to call the isAuth function when the component mounts.
+Router and Routes: Using BrowserRouter, Routes, and Route from react-router-dom to set up the application's routing.
+Routes: Defining the application's routes:
+/ and /login: Display the Login component if the user is not authenticated, otherwise navigate to /dashboard.
+/register: Display the Register component if the user is not authenticated, otherwise navigate to /login.
+/dashboard: Display the Dashboard component if the user is authenticated, otherwise navigate to /login.
+Navigate: Using Navigate from react-router-dom to navigate to different routes based on the authentication status.
+toast.configure(): Configuring toast notifications to be used throughout the application.
+</p>
+
 <h2>Client</h2>
 
 <h3>(Client) index.js</h3>
@@ -113,27 +129,75 @@ module.exports = pool;
 
 ```js
 
-// Importing required modules and components
-import React, { Fragment } from 'react'; // Importing React and Fragment from the 'react' library
-import './App.css'; // Importing the CSS file for styling
+import React, { Fragment, useState, useEffect } from 'react';
+import './App.css';
 
-// Importing custom components
-import InputTodo from "./components/InputTodo"; // Importing the InputTodo component
-import ListTodos from './components/ListTodos'; // Importing the ListTodos component
+import { toast } from 'react-toastify';  // Importing toast notifications
+import 'react-toastify/dist/ReactToastify.css';
+
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";  // Importing routing components
+
+// Components
+import Dashboard from "./components/Dashboard";
+import Login from "./components/Login";
+import Register from "./components/Register";
+
+toast.configure();  // Configuring toast notifications
 
 function App() {
-  // Rendering the App component
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);  // State to track authentication status
+
+  // Function to set authentication status
+  const setAuth = (boolean) => {
+    setIsAuthenticated(boolean);
+  };
+
+  // Function to check if user is authenticated
+  async function isAuth() {
+    try {
+      const response = await fetch("http://localhost:5000/auth/is-verify", {
+        method: "GET",
+        headers: { token: localStorage.token }  // Sending the JWT token stored in localStorage
+      });
+
+      const parseRes = await response.json();
+
+      // Setting isAuthenticated based on the response
+      parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  useEffect(() => {
+    isAuth();  // Calling isAuth function when the component mounts
+  });
+
   return (
-    <Fragment> {/* Using Fragment to group multiple elements without adding an extra node to the DOM */}
-      <div className="container"> {/* Container for styling purposes */}
-        <InputTodo/> {/* Rendering the InputTodo component */}
-        <ListTodos/> {/* Rendering the ListTodos component */}
-      </div>
+    <Fragment>
+      <Router>
+        <div className="container">
+          <Routes>
+            {/* Route to display Login component if not authenticated, otherwise navigate to Dashboard */}
+            <Route exact path="/" element={!isAuthenticated ? <Login setAuth={setAuth} /> : <Navigate to="/dashboard" />} />
+            
+            {/* Route to display Login component if not authenticated, otherwise navigate to Dashboard */}
+            <Route exact path="/login" element={!isAuthenticated ? <Login setAuth={setAuth} /> : <Navigate to="/dashboard" />} />
+            
+            {/* Route to display Register component if not authenticated, otherwise navigate to Login */}
+            <Route exact path="/register" element={!isAuthenticated ? <Register setAuth={setAuth} /> : <Navigate to="/login" />} />
+            
+            {/* Route to display Dashboard component if authenticated, otherwise navigate to Login */}
+            <Route exact path="/dashboard" element={isAuthenticated ? <Dashboard setAuth={setAuth} /> : <Navigate to="/login" />} />
+          </Routes>
+        </div>
+      </Router>
     </Fragment>
   );
 }
 
-export default App; // Exporting the App component to be used in other parts of the application
+export default App;
 
 
 ```
