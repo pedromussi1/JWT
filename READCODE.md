@@ -54,9 +54,12 @@ toast.configure(): Configuring toast notifications to be used throughout the app
 <h3>(Client) index.js</h3>
 
 <p>
-
-
-    
+React: Importing the main React library.
+ReactDOM: Importing the ReactDOM library, which is used to render React components to the DOM.
+'./index.css': Importing the CSS file for styling.
+App: Importing the main App component of the application.
+ReactDOM.createRoot(document.getElementById('root')): Creating a new React root with the root DOM element, which is an asynchronous API to render React components.
+root.render: Rendering the App component inside the React root. The <React.StrictMode> wraps the App component to enable React's strict mode, which helps identify potential problems in the application's code.
 </p>
 
 
@@ -212,21 +215,21 @@ export default App;
 
 ```js
 
-// Importing required modules and components
-import React from 'react'; // Importing React from the 'react' library
-import ReactDOM from 'react-dom/client'; // Importing ReactDOM from the 'react-dom/client' library
-import './index.css'; // Importing the CSS file for styling
-import App from './App'; // Importing the App component
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
 
-// Creating a root for the React application
-const root = ReactDOM.createRoot(document.getElementById('root')); // Creating a root for the React application with the 'root' element from the DOM
+// Creating a new React root with the root DOM element
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-// Rendering the App component inside the root
+// Rendering the App component inside the React root
 root.render(
-  <React.StrictMode> {/* Using React.StrictMode to detect potential problems in the application */}
-    <App /> {/* Rendering the App component */}
+  <React.StrictMode>  {/* Enabling React's strict mode */}
+    <App />  {/* Rendering the App component */}
   </React.StrictMode>
 );
+
 
 ```
 </details>
