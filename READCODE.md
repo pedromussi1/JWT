@@ -72,6 +72,35 @@ GET "/is-verify": Verifying if the user is authenticated (authorization middlewa
 module.exports: Exporting the router for use in other files.
 </p>
 
+<h3>(Server) dashboard.js</h3>
+
+<p>
+
+</p>
+
+<h3>authorization</h3>
+
+<p>
+
+</p>
+
+<h3>Register.js</h3>
+
+<p>
+
+</p>
+
+<h3>(Client) Dashboard.js</h3>
+
+<p>
+
+</p>
+
+<h3>Login</h3>
+
+<p>
+
+</p>
 
 <hr>
 
@@ -322,6 +351,27 @@ module.exports = router;  // Exporting the router
 
 ```js
 
+const router = require("express").Router();  // Importing the Router module from Express
+const pool = require("../db");  // Importing the database connection
+const authorization = require('../middleware/authorization');  // Importing middleware for authorization
+
+// Get user information route
+router.get("/", authorization, async(req, res) => {
+    try {
+        // req.user has the payload from the JWT token
+        // Fetch user name from the database based on user_id stored in req.user
+
+        const user = await pool.query("SELECT user_name FROM users WHERE user_id = $1", [req.user]);
+
+        // Send the user's name as a response
+        res.json(user.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json("Server Error");
+    }
+});
+
+module.exports = router;  // Exporting the router
 
 
 ```
