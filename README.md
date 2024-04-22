@@ -41,10 +41,10 @@
   <kbd><img src="https://i.imgur.com/9p4H4wO.png" alt="AddingItem"></kbd>
 </p>
 
-<p>The user can write the name of a new item they want to add to the list and click on "add" to add that item. In this example I chose to add "Need to buy groceries" to the list. You can see on the second image below that the item has been added to the list.</p>
+<p>The user can write their email and password credentials in order to log into the website.</p>
 
 <p align="center">
-  <kbd><img src="https://i.imgur.com/EffXnKy.png" alt="AddingItem1"></kbd>
+  <kbd><img src="https://i.imgur.com/wtCjc3x.png" alt="AddingItem1"></kbd>
 </p>
 
 <h3>Registering as a User on the Website</h3>
