@@ -38,7 +38,7 @@
 <h3>Logging into the Website</h3>
 
 <p align="center">
-  <kbd><img src="https://i.imgur.com/6yWAVK2.png" alt="AddingItem"></kbd>
+  <kbd><img src="https://i.imgur.com/9p4H4wO.png" alt="AddingItem"></kbd>
 </p>
 
 <p>The user can write the name of a new item they want to add to the list and click on "add" to add that item. In this example I chose to add "Need to buy groceries" to the list. You can see on the second image below that the item has been added to the list.</p>
